@@ -5,6 +5,7 @@ import Sidebar from "../components/Sidebar";
 import Tweet from "../components/Tweet";
 import NewTweet from "../components/Tweet/NewTweet";
 import SearchBar from "../components/SearchBar";
+import Banner from "../components/Auth/Banner";
 
 export default function Home() {
   return (
@@ -50,6 +51,8 @@ export default function Home() {
             <SearchBar />
           </Box>
         </Grid>
+        <Banner />
+
       </Container>
     </>
   );
