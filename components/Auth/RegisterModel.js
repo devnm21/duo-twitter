@@ -5,14 +5,37 @@ import {
     ModalHeader,
     ModalBody,
     ModalCloseButton, Flex, Container, Divider, Text, Input, Button,
+    useBoolean, Alert, AlertTitle, AlertDescription,
 } from '@chakra-ui/react'
 import Link from "next/link";
 
 // COMPONENTS
 import GoogleSignin from "./GoogleSignin";
 import AppleSignin from "./AppleSignin";
+import {useState} from "react";
+
+import {register} from "../../utils/auth-utils";
 
 const RegisterModel = ({isOpen, onClose, alreadyRegisteredUser}) => {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isRegistered, setIsRegistered] = useState(false);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useBoolean(false)
+
+    const handleRegister = async () => {
+        setError('')
+        setLoading.toggle();
+        try {
+            await register(email, password)
+            setIsRegistered(true)
+        } catch (e) {
+            console.log(e)
+            setError(e.error)
+        }
+        setLoading.toggle();
+    }
 
     return <>
         <Modal isOpen={isOpen} onClose={onClose} size={'xl'}>
@@ -39,31 +62,37 @@ const RegisterModel = ({isOpen, onClose, alreadyRegisteredUser}) => {
 
                             <Flex flexDirection={'column'} gap={'1rem'}>
                                 <Input
-                                    type={'text'}
-                                    placeholder={'Full Name'}
-                                    size={'lg'}
-                                    borderColor={'gray.700'}
-                                />
-                                <Input
-                                    type={'text'}
-                                    placeholder={'Username'}
-                                    size={'lg'}
-                                    borderColor={'gray.700'}
-                                />
-                                <Input
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     type={'email'}
                                     placeholder={'email'}
                                     size={'lg'}
                                     borderColor={'gray.700'}
                                 />
                                 <Input
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     type={'password'}
                                     placeholder={'*********'}
                                     size={'lg'}
                                     borderColor={'gray.700'}
                                 />
-
+                                {error && <Alert status='error'>
+                                    <Flex direction={'column'}>
+                                        <AlertTitle w={'100%'} color={'red'} >Uh-Oh!</AlertTitle>
+                                        <AlertDescription color={'red'}>{error}</AlertDescription>
+                                    </Flex>
+                                </Alert>
+                                }
+                                {
+                                    isRegistered && <Alert backgroundColor={'purple.200'} status='success'>
+                                        <AlertTitle color={'white'}>Registered Successfully!</AlertTitle>
+                                    </Alert>
+                                }
                                 <Button
+                                    isLoading={loading}
+                                    isDisabled={loading}
+                                    onClick={handleRegister}
                                     rounded={'full'}
                                     bg={'white'}
                                     color={'black'}
