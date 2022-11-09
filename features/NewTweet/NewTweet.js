@@ -1,15 +1,29 @@
 import {Avatar, Box, Flex, Grid, Divider, Textarea, Text, IconButton, Button} from "@chakra-ui/react";
 import {FaRegImage} from 'react-icons/fa'
 import {useState} from "react";
+import { useMutation } from "@apollo/client";
+import {CREATE_TWEET_MUTATION} from "./CREATE_TWEET_MUTATION";
+import realmApp from "../../lib/realm";
 
-const NewTweet = () => {
+const NewTweet = ({ updateTweets }) => {
     const [tweetBody, setTweetBody] = useState('')
 
     const handleTweetChange = (e) => setTweetBody(e.target.value)
+    const [createTweet, { loading }] = useMutation(CREATE_TWEET_MUTATION)
 
-    const submitTweet = () => {
-        console.log(tweetBody)
-        alert('Tweeted')
+    const submitTweet = async () => {
+        await createTweet({
+            variables: {
+                tweet: {
+                    content:  tweetBody,
+                    author: realmApp.currentUser.id
+                }
+            }
+        })
+        setTweetBody('')
+        updateTweets(prevData => ({
+            tweets: [{ content: tweetBody }, ...prevData.tweets]
+        }))
     }
 
     return <>
@@ -43,6 +57,8 @@ const NewTweet = () => {
                         rounded={'full'}
                     />
                     <Button
+                        isLoading={loading}
+                        isDisabled={loading}
                         colorScheme={'twitter'}
                         rounded={'full'}
                         onClick={submitTweet}
