@@ -15,3 +15,8 @@ export const verifyUser = (tokenId, token) => {
 export const loginUser = (email, password) => {
     return realmApp.logIn(Credentials.emailPassword(email, password));
 }
+
+export const getToken = async () => {
+    await realmApp.currentUser.refreshAccessToken();
+    return realmApp.currentUser.accessToken;
+}

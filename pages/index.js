@@ -3,11 +3,17 @@ import {Grid, Box, Container, Flex, Heading} from "@chakra-ui/react";
 // COMPONENTS
 import Sidebar from "../components/Sidebar";
 import Tweet from "../components/Tweet";
-import NewTweet from "../components/Tweet/NewTweet";
+import NewTweet from "../features/NewTweet";
 import SearchBar from "../components/SearchBar";
 import Banner from "../components/Auth/Banner";
+import {useQuery} from "@apollo/client";
+import Timeline from "../features/Timeline";
+import {FETCH_TWEETS} from "../features/Timeline/FETCH_TWEETS";
+import {useState} from "react";
 
 export default function Home() {
+  const { data, loading, error, updateQuery } = useQuery(FETCH_TWEETS);
+
   return (
     <>
       <Container maxW={"container.xl"}>
@@ -28,24 +34,9 @@ export default function Home() {
           >
             <Flex flexDirection={'column'} padding={'1rem'}>
                 <Heading size={'md'}>Home</Heading>
-                <NewTweet />
+                <NewTweet updateTweets={updateQuery} />
             </Flex>
-            <Flex flexDirection={'column'} w={'100%'}>
-              <Tweet
-                fullname={"Mehmet"}
-                username={"mehmet"}
-                avatar={"https://pbs.twimg.com/profile_images/1351781709704548352/8Q9ZQ9Zj_400x400.jpg"}
-                tweetBody={'Join us for a live watch party of the #dotNETConf Keynote covering full stack development, APIs, multi-platform development, game development, and machine learning!'}
-                timestamp={'2022-11-03T14:20:56.633Z'}
-            />
-              <Tweet
-                  fullname={"Mehmet"}
-                  username={"mehmet"}
-                  avatar={"https://pbs.twimg.com/profile_images/1351781709704548352/8Q9ZQ9Zj_400x400.jpg"}
-                  tweetBody={'Join us for a live watch party of the #dotNETConf Keynote covering full stack development, APIs, multi-platform development, game development, and machine learning!'}
-                  timestamp={'2022-11-03T14:20:56.633Z'}
-              />
-            </Flex>
+           <Timeline data={data} loading={loading} />
           </Box>
           <Box padding={"1rem"}>
             <SearchBar />
