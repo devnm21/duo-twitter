@@ -1,6 +1,6 @@
 import {Flex} from "@chakra-ui/react";
 
-const Interaction = ({Icon, numbers}) => {
+const Interaction = ({Icon, numbers, onClick}) => {
     return <>
         <Flex
             fontSize={'12px'}
@@ -12,6 +12,7 @@ const Interaction = ({Icon, numbers}) => {
             _hover={{
                 color: 'gray.200'
             }}
+            onClick={onClick}
         >
             <Icon />
             {numbers}

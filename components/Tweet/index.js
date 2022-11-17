@@ -7,9 +7,25 @@ import relativeTime from "dayjs/plugin/relativeTime";
 // COMPONENTS
 import Interaction from "./Interaction";
 import ImageContainer from "./ImageContainer";
+import {useMutation} from "@apollo/client";
+import {TOGGLE_TWEET_MUTATION} from "./TOGGLE_TWEET_MUTATION";
+import {useState} from "react";
 
-const Tweet = ({fullname, username, avatar, tweetBody, timestamp, images}) => {
+const Tweet = ({fullname, username, avatar, tweetBody, timestamp, images, tweetId}) => {
     dayjs.extend(relativeTime)
+
+    const [liked, setLiked] = useState(false)
+    const [toggleTweet] = useMutation(TOGGLE_TWEET_MUTATION)
+
+    const handleLike = async () => {
+        setLiked(!liked)
+        await toggleTweet({
+            variables: {
+                like: !liked,
+                tweetId: tweetId,
+            }
+        })
+    }
 
     return <>
         <Grid
@@ -43,7 +59,7 @@ const Tweet = ({fullname, username, avatar, tweetBody, timestamp, images}) => {
                 <Flex my={'5px'} justifyContent={'space-between'}>
                     <Interaction Icon={FaRegComment} numbers={0} />
                     <Interaction Icon={FaRetweet} numbers={0} />
-                    <Interaction Icon={FaRegHeart} numbers={0} />
+                    <Interaction onClick={handleLike} Icon={FaRegHeart} numbers={0} />
                     <Interaction Icon={AiOutlineUpload} numbers={0} />
                 </Flex>
             </Flex>
