@@ -10,8 +10,8 @@ const Timeline = ({  data, loading }) => {
     return(
         <Flex direction={'column'}>
             {
-                data.tweets.length > 0 ?
-                    data.tweets.map(tweet => <Tweet tweetBody={tweet.content} />)
+                data?.tweets?.length > 0 ?
+                    data.tweets.map(tweet => <Tweet tweetId={tweet._id} fullname={tweet.author?.fullname} username={tweet.author?.username} tweetBody={tweet.content} />)
                     : 'No Tweets Yet'
             }
         </Flex>
